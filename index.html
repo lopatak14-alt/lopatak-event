@@ -1,127 +1,136 @@
-<!doctype html>
+
+<!DOCTYPE html>
 <html lang="cs">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#101b14">
-  <title>LOPATAK EVENT STORE</title>
-  <style>
-    :root{--bg:#0b110d;--panel:#141f18;--line:#2a4432;--green:#69ef91;--muted:#b5c8b9}
-    *{box-sizing:border-box}
-    body{margin:0;background:radial-gradient(ellipse at top,#1b3824 0,#0b110d 55%);color:#f3fff5;font:16px/1.5 system-ui,Segoe UI,Arial,sans-serif}
-    .wrap{width:min(1080px,92%);margin:auto}
-    header{padding:58px 0 38px;text-align:center}
-    .tag{display:inline-block;border:1px solid #477b55;border-radius:999px;padding:6px 13px;color:#b8ffca;font-size:.82rem;letter-spacing:.12em}
-    h1{font-size:clamp(2.3rem,7vw,5rem);line-height:1;margin:20px 0 12px;letter-spacing:.04em;text-shadow:0 4px 25px #45d86b55}
-    h1 span{color:var(--green)}
-    .sub{color:var(--muted);max-width:620px;margin:0 auto}
-    .server{display:inline-flex;gap:10px;align-items:center;margin-top:24px;padding:10px 16px;background:#101a13;border:1px solid var(--line);border-radius:12px;color:#d8ffe1}
-    .server button,.copy{border:0;background:#294b33;color:#eaffee;border-radius:8px;padding:7px 10px;cursor:pointer}
-    h2{text-align:center;margin:18px 0 8px;font-size:2rem}
-    .hint{text-align:center;color:var(--muted);margin:0 0 25px}
-    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-    .card{background:linear-gradient(160deg,#19271e,#111a14);border:1px solid var(--line);border-radius:18px;padding:24px;box-shadow:0 14px 40px #0005}
-    .rank{font-size:1.55rem;font-weight:900;letter-spacing:.07em}
-    .vip{color:#ffd75e}.premium{color:#70baff}.legend{color:#d5a0ff}
-    .price{font-size:2.2rem;font-weight:850;margin:8px 0}
-    .desc{color:var(--muted);min-height:48px}
-    .select{width:100%;border:1px solid #4a7755;background:#203b29;color:#effff2;padding:12px;border-radius:10px;font-weight:750;cursor:pointer;margin-top:12px}
-    .order{margin:38px auto 60px;max-width:700px;background:#141f18;border:1px solid var(--line);border-radius:18px;padding:25px}
-    label{display:block;font-weight:700;margin:15px 0 7px}
-    input,select{width:100%;padding:13px;border-radius:10px;border:1px solid #3b5943;background:#0d160f;color:#fff;font:inherit}
-    .pay{display:block;width:100%;margin-top:18px;padding:15px;border:0;border-radius:11px;background:var(--green);color:#07110a;font-weight:900;font-size:1rem;cursor:pointer}
-    .note{font-size:.9rem;color:var(--muted)}
-    .warning{background:#2b2414;border:1px solid #7a6128;color:#ffe8a6;border-radius:12px;padding:13px;margin-top:16px;font-size:.9rem}
-    footer{text-align:center;padding:25px;color:#8da494;border-top:1px solid #26372b;font-size:.88rem}
-    @media(max-width:760px){.grid{grid-template-columns:1fr}.desc{min-height:0}.card{padding:20px}}
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LOPATAK EVENT STORE</title>
+<style>
+body {
+  margin: 0;
+  background: #101810;
+  color: white;
+  font-family: Arial, sans-serif;
+  text-align: center;
+}
+header {
+  background: #193c24;
+  padding: 35px 15px;
+}
+h1 { color: #65ff85; font-size: 38px; }
+p { color: #ccc; }
+.shop {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  padding: 30px 15px;
+}
+.card {
+  background: #1d2b20;
+  border: 2px solid #3b7848;
+  border-radius: 15px;
+  padding: 25px;
+  width: 220px;
+}
+.price {
+  font-size: 28px;
+  color: #65ff85;
+}
+button {
+  background: #65ff85;
+  color: #101810;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+}
+input {
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  margin: 8px;
+}
+footer { padding: 25px; color: #aaa; }
+</style>
 </head>
 <body>
-  <header class="wrap">
-    <div class="tag">OFFICIAL MINECRAFT JAVA STORE</div>
-    <h1>LOPATAK <span>EVENT</span></h1>
-    <p class="sub">Vyber si rank a užij si event naplno. Po zaplacení ti rank přidělí administrátor ručně.</p>
-    <div class="server">
-      <span>IP: <strong id="serverIp">malls-aided.tun.ply.gg</strong></span>
-      <button class="copy" type="button" onclick="copyIp()">Kopírovat IP</button>
-    </div>
-  </header>
 
-  <main class="wrap">
-    <h2>Vyber si svůj rank</h2>
-    <p class="hint">Jednorázová platba · Ruční doručení ranku</p>
-    <section class="grid" aria-label="Nabídka ranků">
-      <article class="card">
-        <div class="rank vip">VIP</div><div class="price">49 Kč</div>
-        <p class="desc">Základní VIP hodnost na serveru.</p>
-        <button class="select" type="button" onclick="choose('VIP')">Vybrat VIP</button>
-      </article>
-      <article class="card">
-        <div class="rank premium">PREMIUM</div><div class="price">99 Kč</div>
-        <p class="desc">Prémiová hodnost na serveru.</p>
-        <button class="select" type="button" onclick="choose('PREMIUM')">Vybrat PREMIUM</button>
-      </article>
-      <article class="card">
-        <div class="rank legend">LEGEND</div><div class="price">199 Kč</div>
-        <p class="desc">Legendární hodnost na serveru.</p>
-        <button class="select" type="button" onclick="choose('LEGEND')">Vybrat LEGEND</button>
-      </article>
-    </section>
+<header>
+<h1>LOPATAK EVENT</h1>
+<h2>OFFICIAL MINECRAFT STORE</h2>
+<p>Vítej v našem Minecraft shopu!</p>
+<p>IP: malls-aided.tun.ply.gg</p>
+</header>
 
-    <section class="order" id="objednavka">
-      <h2>Objednávka</h2>
-      <p class="hint">Vyplň Minecraft nick a vyber rank. Před zveřejněním webu musíš doplnit svůj PayPal.Me odkaz.</p>
-      <form id="orderForm">
-        <label for="nick">Minecraft Java nick</label>
-        <input id="nick" name="nick" maxlength="16" required pattern="[A-Za-z0-9_]{3,16}" placeholder="Např. Steve123">
-        <label for="rank">Vybraný rank</label>
-        <select id="rank" name="rank">
-          <option value="VIP">VIP – 49 Kč</option>
-          <option value="PREMIUM">PREMIUM – 99 Kč</option>
-          <option value="LEGEND">LEGEND – 199 Kč</option>
-        </select>
-        <button class="pay" type="submit">Pokračovat k PayPalu</button>
-      </form>
-      <div class="warning">
-        <strong>Důležité:</strong> Platba se zatím nepřijímá, dokud nenastavíš svůj skutečný PayPal.Me odkaz v kódu. Po platbě vždy ověř přijetí peněz přímo ve svém PayPal účtu, ne pouze podle screenshotu.
-      </div>
-      <p class="note">Tato jednoduchá verze nemá serverovou databázi ani automatické potvrzení platby. Po zaplacení musí hráč kontaktovat administrátora a uvést svůj nick a objednaný rank.</p>
-    </section>
-  </main>
-  <footer>LOPATAK EVENT STORE · Neoficiální obchod herního serveru</footer>
+<h2>NAŠE RANKY</h2>
+
+<div class="shop">
+<div class="card">
+<h2 style="color:gold">VIP</h2>
+<div class="price">49 Kč</div>
+<p>Základní VIP rank</p>
+<button onclick="selectRank('VIP',49)">Koupit</button>
+</div>
+
+<div class="card">
+<h2 style="color:#55aaff">PREMIUM</h2>
+<div class="price">99 Kč</div>
+<p>Prémiový rank</p>
+<button onclick="selectRank('PREMIUM',99)">Koupit</button>
+</div>
+
+<div class="card">
+<h2 style="color:#ce85ff">LEGEND</h2>
+<div class="price">199 Kč</div>
+<p>Legendární rank</p>
+<button onclick="selectRank('LEGEND',199)">Koupit</button>
+</div>
+</div>
+
+<h2>OBJEDNÁVKA</h2>
+<p>Zadej svůj Minecraft nick:</p>
+<input id="nick" placeholder="Minecraft nick">
+<p id="selected">Nejdříve vyber rank.</p>
+<button onclick="order()">Pokračovat</button>
+
+<p id="message"></p>
+
+<footer>
+LOPATAK EVENT STORE © 2026
+</footer>
 
 <script>
-  // PŘED ZVEŘEJNĚNÍM nahraď text níže svým vlastním PayPal.Me jménem.
-  // Příklad formátu: https://paypal.me/TVOJEJMENU
-  const PAYPAL_ME = "https://paypal.me/TVUJ_PAYPAL";
-  const prices = {VIP:49, PREMIUM:99, LEGEND:199};
+let rank = "";
+let price = 0;
 
-  function choose(rank){
-    document.getElementById("rank").value = rank;
-    document.getElementById("objednavka").scrollIntoView({behavior:"smooth"});
+function selectRank(name, amount) {
+  rank = name;
+  price = amount;
+  document.getElementById("selected").innerText =
+    rank + " – " + price + " Kč";
+}
+
+function order() {
+  let nick = document.getElementById("nick").value.trim();
+
+  if (!rank) {
+    alert("Nejdříve vyber rank!");
+    return;
   }
-  async function copyIp(){
-    const ip = document.getElementById("serverIp").textContent;
-    try { await navigator.clipboard.writeText(ip); alert("IP adresa zkopírována!"); }
-    catch(e) { alert("IP adresa serveru: " + ip); }
+
+  if (!/^[A-Za-z0-9_]{3,16}$/.test(nick)) {
+    alert("Zadej platný Minecraft nick!");
+    return;
   }
-  document.getElementById("orderForm").addEventListener("submit", function(e){
-    e.preventDefault();
-    const nick = document.getElementById("nick").value.trim();
-    const rank = document.getElementById("rank").value;
-    if(!/^[A-Za-z0-9_]{3,16}$/.test(nick)){
-      alert("Zkontroluj Minecraft nick (3–16 znaků, pouze písmena, čísla a _).");
-      return;
-    }
-    if(PAYPAL_ME.includes("TVUJ_PAYPAL")){
-      alert("PayPal ještě není nastaven. V souboru index.html nahraď TVUJ_PAYPAL svým PayPal.Me jménem.");
-      return;
-    }
-    const amount = prices[rank];
-    const confirmed = confirm("Objednávka: " + rank + " za " + amount + " Kč pro nick " + nick +
-      ". Po platbě kontaktuj administrátora a pošli mu tyto údaje. Pokračovat na PayPal?");
-    if(confirmed) window.open(PAYPAL_ME + "/" + amount, "_blank", "noopener,noreferrer");
-  });
+
+  document.getElementById("message").innerText =
+    "Objednávka připravena: " + rank +
+    " pro hráče " + nick +
+    ". Kontaktuj administrátora pro dokončení platby.";
+}
 </script>
+
 </body>
 </html>
